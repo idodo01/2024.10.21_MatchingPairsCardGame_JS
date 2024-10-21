@@ -10,6 +10,18 @@ const gameClearTime = 10.0; // 게임 진행 설정 시간 (초) // 설정용 �
 let gameCurrentTime = gameClearTime; // 현재 게임 흘러간 시간 (초) // 실제 사용 변수
 let intervalId = null;
 
+
+// 스페이스 바를 누르면 시작
+document.onkeydown = event => {
+
+    if(event.key === ' ' && intervalId === null){
+        gameStartInfoH3.style.visibility = 'hidden'; 
+       
+        create_game(); 
+    }
+}
+
+// 초 세기
 function reset_time(){
 
     // 이미 게임 진행중이었다면
@@ -41,22 +53,14 @@ function reset_time(){
             alert('게임 오버!');
 
             gameCurrentTime = gameClearTime;
-            colorButtonContainer.innerHTML = ''; 
+            cardContainer.innerHTML = '';
             gameStartInfoH3.style.visibility = 'visible';
         }
         gameTimeSpan.textContent = gameCurrentTime.toFixed(1);
     }, 100); // 1000이 1초, 100은 0.1초
 }
 
-// 스페이스 바를 누르면 시작
-document.onkeydown = event => {
 
-    if(event.key === ' ' && intervalId === null){
-        gameStartInfoH3.style.visibility = 'hidden'; 
-       
-        create_game(); 
-    }
-}
 
 // 숫자로 된 이미지 배열
 const images = [
@@ -75,28 +79,65 @@ function shuffle(array) {
     return array;
 }
 
-// 카드에 같은 그림 넣기
-function insertImages() {
-    // images.forEach( () => {
-    //     cardContainer.innerHTML = '<div class="card"></div>';
-    // });
 
+// 새로운 게임 레벨을 생성한다
+function create_game(){
+
+    reset_time(); // 초 세기
+
+
+    // cardContainer.innerHTML = '';
+    for (let index = 0; index < images.length; index++) {
+        cardContainer.innerHTML += '<div class="card"></div>';
+    }
+
+    // 그림 카드 넣기
     const shuffledImages = shuffle(images); // 이미지를 섞음
     const cards = document.querySelectorAll('.card'); // 모든 카드 요소 선택
+    const cards2 = document.getElementsByClassName('.card');
 
     cards.forEach((card, index) => {
         const imgElement = document.createElement('img');
         imgElement.src = `images/${shuffledImages[index]}`; // 무작위로 섞인 이미지
-        imgElement.alt = `Card${shuffledImages[index]}`;
+        imgElement.alt = `card${shuffledImages[index]}`;
         card.appendChild(imgElement);
     });
-}
 
-// 새로운 게임 레벨을 생성한다
-function create_game(){
-    // cardContainer.innerHTML = '';
 
-    insertImages();
-    reset_time();
+    let firstCard;
+    let secondCard;
+    let clickCheck = false;
+
+    cards.forEach((card, index) => {
+        // card 내부의 img 요소를 찾음
+        const imgElement = card.querySelector('img');
+        
+       
+        // 카드 클릭
+        card.onclick = () => {
+            if(clickCheck == false) { // 아직 첫번째 카드 클릭하지 않음
+                firstCard = imgElement.alt;
+                console.log(firstCard,clickCheck);
+                clickCheck = true;
+            } else {
+                secondCard = imgElement.alt;
+                console.log("2클릭",secondCard, clickCheck);
+                clickCheck = false;
+            }
+
+            if(firstCard==secondCard) { // 동일한 그림 카드 클릭
+                console.log("동일한 그림 발견~");
+                
+            }
+        }
+
+        
+    });
+    
+
+
+
+
+
 }
     
