@@ -8,8 +8,8 @@
 카드 클릭 후 0.5초 뒤에 다시 뒷면 보여주기,
 총 16개의 그림인 8쌍의 정답을 찾으면 클리어 창
 ## 3. 이미지로 살펴보기
-<img width="500" alt="2" src="https://github.com/user-attachments/assets/2a14d94d-36a6-4144-99e8-c259e79af7c0">
-<img width="500" alt="3" src="https://github.com/user-attachments/assets/cd9e993d-56af-4aa8-9f8e-fba5d8258ef5">
+<img width="500" height="500" alt="2" src="https://github.com/user-attachments/assets/2a14d94d-36a6-4144-99e8-c259e79af7c0">
+<img width="500" height="500" alt="3" src="https://github.com/user-attachments/assets/cd9e993d-56af-4aa8-9f8e-fba5d8258ef5">
 
 ## 4. 이후 업데이트
 => 만약, 추가 업데이트를 한다면
