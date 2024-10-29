@@ -11,11 +11,14 @@ let gameCurrentTime = gameClearTime; // 현재 게임 흘러간 시간 (초) // 
 let intervalId = null;
 
 
-// 스페이스 바를 누르면 시작
+// 키가 눌림
 document.onkeydown = event => {
 
+    // 그 키가 스페이스 바이면서
+    // 타이머가 작동되지 않았을 때,
+    // 게임 시작
     if(event.key === ' ' && intervalId === null){
-        gameStartInfoH3.style.visibility = 'hidden'; 
+        gameStartInfoH3.style.visibility = 'hidden';  // 시작 문구 지우기
        
         create_game(); 
     }
@@ -46,15 +49,16 @@ function reset_time(){
             gameTimeSpan.style.fontWeight = 'bold';
         }
 
-        if(gameCurrentTime <= 0){ 
+        // 게임 오버, 게임 종료
+        if(gameCurrentTime <= 0){  
             clearInterval(intervalId);  
             intervalId = null; 
             
             alert('게임 오버!');
 
-            gameCurrentTime = gameClearTime;
-            cardContainer.innerHTML = '';
-            gameStartInfoH3.style.visibility = 'visible';
+            gameCurrentTime = gameClearTime; // 타이머 초기화
+            cardContainer.innerHTML = ''; // 카드 나오는 부분 비우기
+            gameStartInfoH3.style.visibility = 'visible'; // 시작 문구 다시 보이도록
         }
         gameTimeSpan.textContent = gameCurrentTime.toFixed(1);
     }, 100); // 1000이 1초, 100은 0.1초
@@ -80,7 +84,7 @@ function shuffle(array) {
 }
 
 
-// 새로운 게임 레벨을 생성한다
+// 새로운 게임을 생성한다
 function create_game(){
 
     reset_time(); // 초 세기
@@ -94,19 +98,20 @@ function create_game(){
     // 그림 카드 넣기
     const shuffledImages = shuffle(images); // 이미지를 섞음
     const cards = document.querySelectorAll('.card'); // 모든 카드 요소 선택
-    const cards2 = document.getElementsByClassName('.card');
 
     cards.forEach((card, index) => {
         const imgElement = document.createElement('img');
-        imgElement.src = `images/${shuffledImages[index]}`; // 무작위로 섞인 이미지
-        imgElement.alt = `card${shuffledImages[index]}`;
+        // imgElement.src = `images/${shuffledImages[index]}`; // 무작위로 섞인 이미지
+        imgElement.src = `images/back.jpg`; // 카드 뒷면 사진
+        imgElement.alt = `${shuffledImages[index]}`;
         card.appendChild(imgElement);
     });
 
 
-    let firstCard;
-    let secondCard;
-    let clickCheck = false;
+    let firstCard = '';
+    let secondCard = '';
+    let clickCheck = 0; // 카드 클릭 횟수
+                        // 0: 아무것도 눌리지않음, 1: 첫번째 카드 눌렸음, 2: 두번째 카드 눌렸음
 
     cards.forEach((card, index) => {
         // card 내부의 img 요소를 찾음
@@ -115,20 +120,58 @@ function create_game(){
        
         // 카드 클릭
         card.onclick = () => {
-            if(clickCheck == false) { // 아직 첫번째 카드 클릭하지 않음
-                firstCard = imgElement.alt;
-                console.log(firstCard,clickCheck);
-                clickCheck = true;
+            
+            if(clickCheck == 0) { 
+                firstCard = imgElement;
+                firstCard.alt = imgElement.alt;
+                // 누르면 카드 앞면이 나타남
+
+                firstCard.src = `images/${firstCard.alt}`;
+
+                console.log("1번째 카드 눌림",firstCard.alt,clickCheck);
+                clickCheck = 1; // 1번째 카드 눌림
+
             } else {
-                secondCard = imgElement.alt;
-                console.log("2클릭",secondCard, clickCheck);
-                clickCheck = false;
+                secondCard = imgElement;
+                secondCard.alt = imgElement.alt;
+                // 누르면 카드 앞면이 나타남
+                secondCard.src = `images/${secondCard.alt}`;
+
+                console.log("2번째 카드 눌림",secondCard.alt, clickCheck);
+                clickCheck = 2;  // 2번째 카드 눌림
             }
 
-            if(firstCard==secondCard) { // 동일한 그림 카드 클릭
-                console.log("동일한 그림 발견~");
-                
+            if(clickCheck==2) { // 2번째 카드까지 눌린 상태에서
+
+                // 카드 그림 판단
+                if(firstCard.alt==secondCard.alt) { // 동일한 그림 카드 눌려짐
+                    // 0.5초 뒤, 같은 그림 카드 둘다 없애기
+                    setTimeout(removeCard,500); 
+
+                    function removeCard() {
+                        console.log("동일한 그림 발견~");
+
+                        firstCard.remove();
+                        secondCard.remove();
+                    }           
+
+                } else { // 다른 그림이 눌려짐
+                    
+                    // 0.5초 뒤, 카드 뒷면 다시 보여주기
+                    setTimeout(backCard,500); 
+
+                    function backCard() {
+                        console.log("다른 그림이지요~");
+
+                        firstCard.src = `images/back.jpg`; 
+                        secondCard.src = `images/back.jpg`;
+                    }           
+                }
+                clickCheck = 0; // 카드 클릭 횟수 초기화
+
             }
+
+            
         }
 
         
