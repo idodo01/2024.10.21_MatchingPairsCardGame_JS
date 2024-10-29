@@ -6,7 +6,7 @@ const gameLevelSpan = document.querySelector('.level');
 const cardContainer = document.querySelector('.card-container');
 
 
-const gameClearTime = 10.0; // 게임 진행 설정 시간 (초) // 설정용 변수
+const gameClearTime = 30.0; // 게임 진행 설정 시간 (초) // 설정용 변수
 let gameCurrentTime = gameClearTime; // 현재 게임 흘러간 시간 (초) // 실제 사용 변수
 let intervalId = null;
 
@@ -112,6 +112,7 @@ function create_game(){
     let secondCard = '';
     let clickCheck = 0; // 카드 클릭 횟수
                         // 0: 아무것도 눌리지않음, 1: 첫번째 카드 눌렸음, 2: 두번째 카드 눌렸음
+    let cardCnt = 0; // 맞춘 카드 쌍 (클리어cnt : 8)
 
     cards.forEach((card, index) => {
         // card 내부의 img 요소를 찾음
@@ -153,6 +154,16 @@ function create_game(){
 
                         firstCard.remove();
                         secondCard.remove();
+
+                        cardCnt++;
+
+                        if(cardCnt == 8) { // 맞춘 카드 쌍 개수가 8이 되면 클리어
+
+                            clearInterval(intervalId);  
+                            intervalId = null; 
+                            
+                            alert('게임 클리어~!!');
+                        }
                     }           
 
                 } else { // 다른 그림이 눌려짐
@@ -170,6 +181,7 @@ function create_game(){
                 clickCheck = 0; // 카드 클릭 횟수 초기화
 
             }
+
 
             
         }
